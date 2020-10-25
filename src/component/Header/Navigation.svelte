@@ -1,5 +1,24 @@
 <script>
+	import { onDestroy } from 'svelte';
+
 	import { link } from 'svelte-routing';
+	import { appStore } from '../../store';
+	let currentPage;
+	const unsubscribe = appStore.subscribe((store) => {
+		currentPage = store.currentPage;
+	});
+
+	onDestroy(unsubscribe);
+
+	function onHandlerLink() {
+		appStore.update((prevState) => {
+			return {
+				...prevState,
+				currentPage: 1,
+			};
+		});
+		currentPage = currentPage;
+	}
 </script>
 
 <style>
@@ -35,7 +54,7 @@
 
 <div class="col-8">
 	<ul class="nav justify-content-around">
-		<li class="nav-item">
+		<li class="nav-item" on:click={() => onHandlerLink()}>
 			<a
 				class="nav-link active"
 				aria-current="page"

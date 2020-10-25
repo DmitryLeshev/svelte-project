@@ -25,6 +25,10 @@
 		(item) => item.name.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1
 	);
 
+	$: if (searchTerm) {
+		currentPage = 1;
+	}
+
 	$: {
 		indexOfLastBeers = currentPage * postsPerPage;
 		indexOfFirstBeers = indexOfLastBeers - postsPerPage;
@@ -59,14 +63,12 @@
 		});
 	};
 
-	onMount(() => {
+	onMount(async () => {
 		update();
-		const timeout = setTimeout(async () => {
-			const beers = await punkApiService.getAllBeers();
 
-			putBeersInStore(beers);
-			clearTimeout(timeout);
-		}, 500);
+		const beers = await punkApiService.getAllBeers();
+
+		putBeersInStore(beers);
 	});
 
 	const unsubscribe = appStore.subscribe((store) => {
